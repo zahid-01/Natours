@@ -145,11 +145,11 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
-tourSchema.post(/^find/, function (doc, next) {
-  const time = Date.now() - this.now;
-  console.log(time);
-  next();
-});
+// tourSchema.post(/^find/, function (doc, next) {
+//   const time = Date.now() - this.now;
+//   console.log(time);
+//   next();
+// });
 
 // tourSchema.pre('aggregate', function (next) {
 //   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });

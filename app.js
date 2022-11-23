@@ -10,6 +10,8 @@ const morgan = require('morgan');
 //Mongo sanitize
 const mongoSanitize = require('express-mongo-sanitize');
 
+const compression = require('compression');
+
 //XSS sanitze
 const xss = require('xss-clean');
 
@@ -107,6 +109,8 @@ app.use('/api/v1/review', reviewRouter);
 
 //Middleware from booking router
 app.use('/api/v1/booking', bookingRouter);
+
+app.use(compression());
 
 //Middleware for rendering
 app.use('/', viewRouter);
