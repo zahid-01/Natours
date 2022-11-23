@@ -38,6 +38,7 @@ const viewRouter = require('./Routes/viewRouter');
 const bookingRouter = require('./Routes/bookingRouter');
 
 //Create an express application or we can say instance of express.
+//This is basically the start of our whole project
 const app = express();
 
 //Our Global error class
