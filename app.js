@@ -55,10 +55,19 @@ const AppError = require('./Utils/apperror');
 //Callback of our errror class
 const errorController = require('./Controllers/errorController');
 
+const bookingController = require('./Controllers/bookingController');
+
 // const helmet = require('helmet');
 
 //Set httpHeaders
 // app.use(helmet());
+
+//Stripe webhook
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  bookingController.webhookCheckout
+);
 
 //Middleware for POST JSON data
 //Body parser, reading data from body into req.body
@@ -91,9 +100,9 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 //Enable morgan consoles only for dev phase only
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
+// if (process.env.NODE_ENV === 'development') {
+//   app.use(morgan('dev'));
+// }
 
 //Setting up for templates engine
 app.set('view engine', 'pug');

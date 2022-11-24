@@ -8,7 +8,7 @@ const { createBookingCheckout, myBookings } = require('../Controllers/bookingCon
 viewRouter.get('/me', protect, viewCntlr.me);
 viewRouter.use(isLoggedIn);
 viewRouter.get('/my-bookings', protect, myBookings);
-viewRouter.get('/', createBookingCheckout, viewCntlr.getOverview);
+viewRouter.get('/', viewCntlr.getOverview);
 
 viewRouter.get('/tour/:slug', viewCntlr.getTour);
 
