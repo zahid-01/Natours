@@ -6,20 +6,20 @@ const User = require('../Models/userModels');
 const { catchAsync } = require('../Utils/catchAsync');
 const Email = require('../Utils/sendemail');
 
-const cookieOptions = {
-  expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
-  httpOnly: true,
-};
-if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
-
 const genToken = function (id) {
   return jwt.sign(id, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
 
-const createSendToken = (user, statusCode, res) => {
+const createSendToken = (user, statusCode, req, res) => {
   const token = genToken({ id: user._id });
+
+  const cookieOptions = {
+    expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
+    httpOnly: true,
+    secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
+  };
 
   res.cookie('jwt', token, cookieOptions);
 
@@ -43,7 +43,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
   const url = `${req.protocol}://${req.get('host')}/me`;
   await new Email(user, url).sendWelcome();
 
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
 
 exports.login = async (req, res, next) => {
@@ -59,7 +59,7 @@ exports.login = async (req, res, next) => {
     return next(new AppError(404, 'Invalid credentials'));
   }
   //3)Send the response
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 };
 
 exports.logout = (req, res) => {
@@ -175,7 +175,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   user.passwordResetTokenExpires = undefined;
   await user.save();
 
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
@@ -197,5 +197,5 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   user.passwordConfirm = req.body.confirmPassword;
   await user.save();
 
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
