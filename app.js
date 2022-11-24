@@ -39,10 +39,15 @@ const viewRouter = require('./Routes/viewRouter');
 //Booking router
 const bookingRouter = require('./Routes/bookingRouter');
 
+//Cors
+const cors = require('cors');
+
 //Create an express application or we can say instance of express.
 //This is basically the start of our whole project
 const app = express();
 app.enable('trust proxy');
+app.use(cors());
+app.options('*', cors());
 
 //Our Global error class
 const AppError = require('./Utils/apperror');
